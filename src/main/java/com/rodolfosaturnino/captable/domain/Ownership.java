@@ -1,22 +1,20 @@
 package com.rodolfosaturnino.captable.domain;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 public class Ownership {
 
 	private String investor;
 	private Long shares;
 	private BigDecimal cashPaid;
-	private BigDecimal ownership;
+	private Double ownership;
 	
 	public Ownership() { }
 	
-	public Ownership(String name, Long shares, BigDecimal cash, Long sharesOwned) {
+	public Ownership(String name, Long shares, BigDecimal cash) {
 		this.investor = name;
 		this.shares = shares;
 		this.cashPaid = cash;
-		this.ownership = new BigDecimal(sharesOwned);
 	}
 
 	public String getInvestor() {
@@ -31,14 +29,9 @@ public class Ownership {
 		return cashPaid;
 	}
 
-	public BigDecimal getOwnership() {
-		return ownership;
-	}
-	
-	public void addAnotherBuy(Long shares, BigDecimal cashPaid, Long totalShares) {
+	public void addAnotherBuy(Long shares, BigDecimal cashPaid) {
 		this.shares = Long.sum(this.shares, shares);
 		this.cashPaid = this.cashPaid.add(cashPaid);
-		this.ownership = new BigDecimal(this.shares).divide(new BigDecimal(totalShares), 2, RoundingMode.UP);
 	}
 
 	@Override
@@ -67,4 +60,11 @@ public class Ownership {
 		return true;
 	}
 
+	public Double getOwnership() {
+		return ownership;
+	}
+
+	public void setOwnership(Double ownership) {
+		this.ownership = ownership;
+	}
 }

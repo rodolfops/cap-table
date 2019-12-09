@@ -1,0 +1,8 @@
+#!/bin/bash
+
+mvn clean install
+CP="$(mvn -q exec:exec -Dexec.executable=echo -Dexec.args=\"%classpath\")"
+printf "#!/bin/bash\n\njava -cp target/cap-table-1.0-SNAPSHOT.jar:$CP com.rodolfosaturnino.captable.App" > cap_table
+echo ' $@' >> cap_table
+chmod 755 cap_table
+echo "Build Success!" 

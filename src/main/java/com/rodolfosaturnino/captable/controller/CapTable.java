@@ -13,9 +13,9 @@ public class CapTable {
 
 	private static final String COMMA = ",";
 	private static final String INPUT_PATTERN = "^\\d{4}-\\d{2}-\\d{2},\\d{4},\\d+.\\d+,.*";
-	Map<String, Ownership> owners = new HashMap<String, Ownership>(); 
+	private Map<String, Ownership> owners = new HashMap<String, Ownership>(); 
 
-	public void readFile(Scanner scanner, String date) {
+	public void readFile(Scanner scanner, String date, String output) {
 		while (scanner.hasNext()) {
 	        readLine(scanner.nextLine(), date);
 	    }
@@ -38,12 +38,12 @@ public class CapTable {
 		BigDecimal cashPaid = new BigDecimal(cash);
 		Company.getInstance().sellShares(purchasedShares, cashPaid);
 		Ownership owner = null;
-		if(owners.containsKey(name)){
-			owner = owners.get(name);
-			owner.addAnotherBuy(purchasedShares, cashPaid, Company.getInstance().getSharesSold());
+		if(getOwners().containsKey(name.trim())){
+			owner = getOwners().get(name.trim());
+			owner.addAnotherBuy(purchasedShares, cashPaid);
 		} else {
-			owner = new Ownership(name, purchasedShares, cashPaid, purchasedShares);
-			owners.put(name, owner);
+			owner = new Ownership(name.trim(), purchasedShares, cashPaid);
+			getOwners().put(name.trim(), owner);
 		}
 		return owner;
 	}
@@ -61,4 +61,7 @@ public class CapTable {
 		return false;
 	}
 
+	public Map<String, Ownership> getOwners() {
+		return owners;
+	}
 }
