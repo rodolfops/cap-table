@@ -25,7 +25,7 @@ public class App {
 
 	private static final String OUTPUT_FILE = "./output.json";
 	private CapTable capTable;
-	
+
 	public App() {
 		this.capTable = new CapTable();
 	}
@@ -41,14 +41,14 @@ public class App {
 		}
 		String csv = args[0];
 		String date = null;
-		if(args.length > 1) {
+		if (args.length > 1) {
 			date = args[1];
 		}
 		String output = null;
-		if(args.length > 2) {
+		if (args.length > 2) {
 			output = args[2];
 		}
-		
+
 		processInput(csv, date);
 		writeOutput(capTable.getOwners(), date, output);
 
@@ -59,55 +59,58 @@ public class App {
 		Scanner scanner = null;
 		try {
 			inputStream = new FileInputStream(csv);
-		    scanner = new Scanner(inputStream);
-		    capTable.readFile(scanner, date, null);
-		    
-		    if (scanner.ioException() != null) {
-		        throw scanner.ioException();
-		    }
+			scanner = new Scanner(inputStream);
+			capTable.readFile(scanner, date, null);
+
+			if (scanner.ioException() != null) {
+				throw scanner.ioException();
+			}
 		} catch (FileNotFoundException e) {
-		    throw new InvalidFileException(ErrorMessage.VALID_FILE);
+			throw new InvalidFileException(ErrorMessage.VALID_FILE);
 		} finally {
 			if (inputStream != null) {
-		        inputStream.close();
-		    }
+				inputStream.close();
+			}
 			if (scanner != null) {
-		        scanner.close();
-		    }
+				scanner.close();
+			}
 		}
 	}
 
-	private void writeOutput(Map<String, Ownership> owners, String date, String outputFile) {
-		if(date == null) {
+	private void writeOutput(Map<String, Ownership> owners, String date,
+			String outputFile) {
+		if (date == null) {
 			date = LocalDate.now().toString();
 		}
-		Output output = new Output(date, Company.getInstance().getCashRaised(),Company.getInstance().getSharesSold());
+		Output output = new Output(date, Company.getInstance().getCashRaised(),
+				Company.getInstance().getSharesSold());
 		output.setOwnership(getOwnersJSON(owners));
-		
+
 		ObjectMapper mapper = new ObjectMapper();
-        try {
-        	mapper.writeValue(new File(OUTPUT_FILE), output);
-        	String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(output);
-//        	System.out.println(json);
+		try {
+			mapper.writeValue(new File(OUTPUT_FILE), output);
+			String json = mapper.writerWithDefaultPrettyPrinter()
+					.writeValueAsString(output);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private List<Ownership> getOwnersJSON(Map<String, Ownership> owners) {
 		List<Ownership> list = new ArrayList<>();
 		for (Ownership owner : owners.values()) {
 			owner.setOwnership(getOwnership(owner));
 			list.add(owner);
 		}
-		
+
 		return list;
 	}
 
 	private double getOwnership(Ownership owner) {
-		double owns = ((double)owner.getShares()/Company.getInstance().getSharesSold())*100.00;
-		
+		double owns = ((double) owner.getShares() / Company.getInstance()
+				.getSharesSold()) * 100.00;
+
 		BigDecimal bd = new BigDecimal(owns).setScale(2, RoundingMode.HALF_UP);
-        return bd.doubleValue();
+		return bd.doubleValue();
 	}
 }

@@ -13,19 +13,19 @@ public class CapTable {
 
 	private static final String COMMA = ",";
 	private static final String INPUT_PATTERN = "^\\d{4}-\\d{2}-\\d{2},\\d{4},\\d+.\\d+,.*";
-	private Map<String, Ownership> owners = new HashMap<String, Ownership>(); 
+	private Map<String, Ownership> owners = new HashMap<String, Ownership>();
 
 	public void readFile(Scanner scanner, String date, String output) {
 		while (scanner.hasNext()) {
-	        readLine(scanner.nextLine(), date);
-	    }
+			readLine(scanner.nextLine(), date);
+		}
 	}
 
 	public boolean readLine(String nextLine, String date) {
-		if(nextLine.matches(INPUT_PATTERN)) {
+		if (nextLine.matches(INPUT_PATTERN)) {
 			String[] strings = nextLine.split(COMMA);
-			
-			if(isPurchasedDateBeforeDueDate(strings[0], date)){
+
+			if (isPurchasedDateBeforeDueDate(strings[0], date)) {
 				addNewShareSell(strings[1], strings[2], strings[3]);
 				return true;
 			}
@@ -38,7 +38,7 @@ public class CapTable {
 		BigDecimal cashPaid = new BigDecimal(cash);
 		Company.getInstance().sellShares(purchasedShares, cashPaid);
 		Ownership owner = null;
-		if(getOwners().containsKey(name.trim())){
+		if (getOwners().containsKey(name.trim())) {
 			owner = getOwners().get(name.trim());
 			owner.addAnotherBuy(purchasedShares, cashPaid);
 		} else {
@@ -50,15 +50,12 @@ public class CapTable {
 
 	private boolean isPurchasedDateBeforeDueDate(String string, String date) {
 		LocalDate purchasedDate = LocalDate.parse(string);
-		LocalDate dueDate = LocalDate.now(); 
-		if(date != null) {
+		LocalDate dueDate = LocalDate.now();
+		if (date != null) {
 			dueDate = LocalDate.parse(date);
 		}
-	
-		if(!purchasedDate.isAfter(dueDate)) {
-				return true;
-		}
-		return false;
+
+		return dueDate.isAfter(purchasedDate);
 	}
 
 	public Map<String, Ownership> getOwners() {
