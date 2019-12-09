@@ -1,5 +1,7 @@
 package com.rodolfosaturnino.captable;
 
+import java.io.IOException;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,19 +18,19 @@ public class AppTest {
 	}
 	
     @Test(expected = NoInputException.class)
-    public void testNoInput() {
+    public void testNoInput() throws IOException {
     	String[] input = {};
     	app.summary(input);
     }
     
     @Test(expected = InvalidFileException.class)
-    public void testInvalidFileInput() {
+    public void testInvalidFileInput() throws IOException {
     	String[] input = {""};
     	app.summary(input);
     }
     
     @Test
-    public void testValidFile() {
+    public void testValidFile() throws IOException {
     	String[] input = {"example1.csv"};
     	app.summary(input);
     }
